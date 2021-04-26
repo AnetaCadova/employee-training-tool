@@ -1,0 +1,25 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+/app.db
+
+# User-specific stuff
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+
+# Default ignored files
+.idea/**/shelf/
+.idea/**/workspace.xml
+# Rider ignored files
+.idea/**/projectSettingsUpdater.xml
+.idea/**/.idea.employee-training-tool.iml
+.idea/**/modules.xml
+.idea/**/contentModel.xml
+# Datasource local storage ignored files
+.idea/**/dataSources/
+.idea/**/dataSources.local.xml
+# Editor-based HTTP Client requests
+.idea/**/httpRequests/

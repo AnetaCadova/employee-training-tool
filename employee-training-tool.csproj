@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <UserSecretsId>aspnet-employee_training_tool-2B4AC1CA-E131-4C1F-883E-BA0070848636</UserSecretsId>
+        <RootNamespace>employee_training_tool</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.5"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.5"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.5"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.5"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.5"/>
+    </ItemGroup>
+
+</Project>
