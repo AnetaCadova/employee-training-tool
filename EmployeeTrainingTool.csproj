@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <UserSecretsId>aspnet-employee_training_tool-2B4AC1CA-E131-4C1F-883E-BA0070848636</UserSecretsId>
+        <RootNamespace>employee_training_tool</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Update="app.db" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.5" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.5" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.5">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\AccessDenied.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\ConfirmEmail.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\ConfirmEmailChange.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\ExternalLogin.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\ForgotPassword.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\ForgotPasswordConfirmation.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\Lockout.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\Login.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\LoginWith2fa.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\LoginWithRecoveryCode.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\Logout.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\Register.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\RegisterConfirmation.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\ResendEmailConfirmation.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\ResetPassword.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\ResetPasswordConfirmation.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\_StatusMessage.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\_ViewImports.cshtml" />
+    </ItemGroup>
+
+</Project>

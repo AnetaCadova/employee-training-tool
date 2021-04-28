@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "employee-training-tool", "employee-training-tool.csproj", "{7CC0CA0C-C8D7-410B-A3B5-2A91FC184D19}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTrainingTool", "EmployeeTrainingTool.csproj", "{7CC0CA0C-C8D7-410B-A3B5-2A91FC184D19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
