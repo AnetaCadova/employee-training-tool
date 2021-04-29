@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace employee_training_tool.Models
 {
-    public class Role : IdentityRole
+    public class ApplicationRole : IdentityRole<int>
     {
         public const string Admin = "Admin";
         public const string Newcomer = "Newcomer";
