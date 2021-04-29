@@ -1,0 +1,39 @@
+@model employee_training_tool.Models.Enrollment
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create New Enrollment</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NewComerId" class="control-label"></label>
+                <select asp-for="NewComerId" class ="form-control" asp-items="ViewBag.NewComerId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="MentorId" class="control-label"></label>
+                <select asp-for="MentorId" class ="form-control" asp-items="ViewBag.MentorId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="LearningPathId" class="control-label"></label>
+                <select asp-for="LearningPathId" class ="form-control" asp-items="ViewBag.LearningPathId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
