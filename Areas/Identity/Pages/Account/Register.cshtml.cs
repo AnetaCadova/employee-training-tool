@@ -22,13 +22,13 @@ namespace employee_training_tool.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
 
-        public IEnumerable<SelectListItem> Roles = Role.getRoles()
+        public IEnumerable<SelectListItem> Roles = ApplicationRole.getRoles()
             .Select(role =>
                 new SelectListItem
                 {
@@ -38,11 +38,11 @@ namespace employee_training_tool.Areas.Identity.Pages.Account
 
 
         public RegisterModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager
+            RoleManager<IdentityRole<int>> roleManager
         )
 
         {
@@ -105,7 +105,7 @@ namespace employee_training_tool.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User
+                var user = new ApplicationUser
                 {
                     FirstName = Input.FirstName, LastName = Input.LastName, UserName = Input.Email,
                     Email = Input.Email, UserRole = Input.Role
@@ -115,15 +115,15 @@ namespace employee_training_tool.Areas.Identity.Pages.Account
                 {
                     if (!await _roleManager.RoleExistsAsync(Input.Role))
                     {
-                        await _roleManager.CreateAsync(new IdentityRole(Role.Admin));
-                        await _roleManager.CreateAsync(new IdentityRole(Role.Mentor));
-                        await _roleManager.CreateAsync(new IdentityRole(Role.Newcomer));
-                        await _roleManager.CreateAsync(new IdentityRole(Role.Viewer));
+                        await _roleManager.CreateAsync(new IdentityRole<int>(ApplicationRole.Admin));
+                        await _roleManager.CreateAsync(new IdentityRole<int>(ApplicationRole.Mentor));
+                        await _roleManager.CreateAsync(new IdentityRole<int>(ApplicationRole.Newcomer));
+                        await _roleManager.CreateAsync(new IdentityRole<int>(ApplicationRole.Viewer));
                     }
 
                     await _userManager.AddToRoleAsync(user, Input.Role);
 
-                    await _userManager.AddToRolesAsync(user, Role.getRoles());
+                    await _userManager.AddToRolesAsync(user, ApplicationRole.getRoles());
 
                     _logger.LogInformation("User created a new account with password.");
 

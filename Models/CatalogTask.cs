@@ -1,10 +1,10 @@
 namespace employee_training_tool.Models
 {
-    public class Task
+    public class CatalogTask
     {
-        public int TaskID { get; set; }
-        public int LearningPathID { get; set; }
+        public int CatalogTaskId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public TaskTypes TaskType { get; set; }
     }
 }

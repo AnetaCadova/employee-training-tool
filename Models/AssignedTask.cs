@@ -1,9 +1,15 @@
 namespace employee_training_tool.Models
 {
-    public class AssignedTask : Task
+    public class AssignedTask
     {
-        public virtual LearningPath LearningPath { get; set; }
+        public int AssignedTaskId { get; set; }
+        public int LearningPathId { get; set; }
+        public int CatalogTaskId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
         public TaskStatus Status { get; set; }
-        public TaskTypes TaskTypes { get; set; }
+        public TaskTypes TaskType { get; set; }
+        public virtual LearningPath LearningPath { get; set; }
+
     }
 }
