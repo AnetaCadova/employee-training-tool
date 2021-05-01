@@ -1,0 +1,66 @@
+@model employee_training_tool.Models.LearningPath
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create New Learning path</h1>
+
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control"/>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control"/>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        @Html.Label("Tasks")
+                    </th>
+                    <th>
+                        @Html.Label("Add")
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (CatalogTask item in ViewBag.ListOfTasks)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            <input name="tasksToAdd" type="checkbox" value="@item.CatalogTaskId" class=""/>
+                        </td>
+
+                    </tr>
+                }
+                </tbody>
+            </table>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

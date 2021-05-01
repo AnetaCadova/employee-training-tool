@@ -1,0 +1,50 @@
+@using TaskStatus = employee_training_tool.Models.TaskStatus
+@using System.ComponentModel
+@model employee_training_tool.Models.AssignedTask
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>AssignedTask</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="AssignedTaskId"/>
+            <input type="hidden" asp-for="CatalogTaskId"/>
+            <input type="hidden" asp-for="LearningPathId"/>
+            <input type="hidden" asp-for="Description"/>
+            <input type="hidden" asp-for="Title"/>
+            <input type="hidden" asp-for="TaskType"/>
+
+            <div class="form-group">
+                @Html.Label("Title")
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<TaskStatus>()"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @Html.Label("Description:")
+            </div>
+            <div class="form-group">
+                @Html.DisplayFor(model => model.Description)
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
