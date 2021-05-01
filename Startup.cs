@@ -34,12 +34,14 @@ namespace employee_training_tool
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            // services.AddMvc(options => { options.Filters.Add(new AuthorizeFilter()); });
-            
-            services.AddIdentity<ApplicationUser, IdentityRole<int>>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddMvc(options => { options.Filters.Add(new AuthorizeFilter()); });
+
+            services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
+                    options.SignIn.RequireConfirmedAccount = false)
                 .AddDefaultTokenProviders()
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddControllersWithViews();
         }
 
