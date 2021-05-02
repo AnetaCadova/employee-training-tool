@@ -1,0 +1,61 @@
+@model IEnumerable<employee_training_tool.Models.AssignedLearningPath>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>My Learing Paths</h1>
+@if (User.IsInRole(ApplicationRole.Mentor))
+{
+    <p>
+        @Html.ActionLink("Assign new", "Create", "Enrollment", null, null)
+    </p>
+}
+
+<table class="table">
+    <thead>
+    <tr>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Mentor)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NewComer)
+        </th>
+
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mentor.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NewComer.UserName)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.AssignedLearningPathId">Details</a> |
+                @if (User.IsInRole(ApplicationRole.Mentor))
+                {
+                    @Html.ActionLink("Delete", "Delete", "Enrollment", new {id = item.EnrollmentId}, null)
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
