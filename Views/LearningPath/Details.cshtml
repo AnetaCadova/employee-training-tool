@@ -7,7 +7,7 @@
 <h1>Learning Path Details</h1>
 
 <div>
-    <h4>LearningPath</h4>
+    <h4>@Model.Title</h4>
     <hr/>
     <dl class="row">
         <dt class="col-sm-2">
@@ -26,7 +26,10 @@
             <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Tasks)
+                    @Html.Label("Task Title")
+                </th>
+                <th>
+                    @Html.Label("Task Description")
                 </th>
                 <th></th>
             </tr>
@@ -39,7 +42,10 @@
                         @Html.DisplayFor(modelItem => item.Title)
                     </td>
                     <td>
-                        @Html.ActionLink("Open", "Edit", "AssignedTask", new {id = item.AssignedTaskId}, null)
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.ActionLink("View details", "Details", "CatalogTask", new {id = item.CatalogTaskId}, null)
 
                     </td>
                 </tr>

@@ -1,13 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using employee_training_tool.Data;
 using employee_training_tool.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TaskStatus = employee_training_tool.Models.TaskStatus;
 
-namespace EmployeeTrainingTool.Controllers
+namespace employee_training_tool.Controllers
 {
     public class EnrollmentController : Controller
     {
@@ -26,26 +28,6 @@ namespace EmployeeTrainingTool.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Enrollment/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var enrollment = await _context.Enrollments
-                .Include(e => e.LearningPath)
-                .Include(e => e.Mentor)
-                .Include(e => e.NewComer)
-                .FirstOrDefaultAsync(m => m.EnrollmentId == id);
-            if (enrollment == null)
-            {
-                return NotFound();
-            }
-
-            return View(enrollment);
-        }
 
         // GET: Enrollment/Create
         public IActionResult Create()
@@ -70,9 +52,30 @@ namespace EmployeeTrainingTool.Controllers
         {
             if (ModelState.IsValid)
             {
-                SetEnrollmentValues(enrollment);
+                enrollment.Mentor = (User.IsInRole(ApplicationRole.Mentor))
+                    ? await _context.ApplicationUsers.FindAsync(
+                        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)))
+                    : await _context.ApplicationUsers.FindAsync(enrollment.MentorId);
+                enrollment.MentorId = enrollment.Mentor.Id;
+                enrollment.NewComer = await _context.ApplicationUsers.FindAsync(enrollment.NewComerId);
+                var assignedLearningPath = CreateAssignedLearningPath(enrollment);
+                enrollment.LearningPathId = assignedLearningPath.AssignedLearningPathId;
+                enrollment.LearningPath = assignedLearningPath;
+
+                _context.AssignedLearningPaths.Add(assignedLearningPath);
                 _context.Add(enrollment);
                 await _context.SaveChangesAsync();
+                assignedLearningPath.Enrollment = enrollment;
+                assignedLearningPath.EnrollmentId = enrollment.EnrollmentId;
+
+                _context.AssignedLearningPaths.Update(assignedLearningPath);
+                await _context.SaveChangesAsync();
+
+                if (User.IsInRole(ApplicationRole.Mentor))
+                {
+                    return Redirect("/AssignedLearningPath/Index");
+                }
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -87,93 +90,43 @@ namespace EmployeeTrainingTool.Controllers
             return View(enrollment);
         }
 
-        private void SetEnrollmentValues(Enrollment enrollment)
+        private AssignedLearningPath CreateAssignedLearningPath(Enrollment enrollment)
         {
-            enrollment.Mentor = _context.ApplicationUsers.Find(enrollment.MentorId);
-            enrollment.NewComer = _context.ApplicationUsers.Find(enrollment.NewComerId);
-            LearningPath learningPath = _context.LearningPaths.Find(enrollment.LearningPathId);
-            AssignedLearningPath assignedLearningPath = new AssignedLearningPath()
+            var learningPath = _context.LearningPaths.Find(enrollment.LearningPathId);
+            learningPath.Tasks =
+                _context.LearningPathTasks.Where(task => task.LearningPathId.Equals(learningPath.LearningPathId))
+                    .ToList();
+            var assignedLearningPath = new AssignedLearningPath()
             {
                 OriginalLearningPathId = learningPath.LearningPathId,
                 Description = learningPath.Description,
                 Title = learningPath.Title,
                 OriginalLearningPath = learningPath,
-                Enrollments = new List<Enrollment>()
+                MentorId = enrollment.MentorId,
+                Mentor = enrollment.Mentor,
+                NewComerId = enrollment.NewComerId,
+                NewComer = enrollment.NewComer,
+                Tasks = new List<AssignedTask>(),
             };
-            enrollment.LearningPath = assignedLearningPath;
-            assignedLearningPath.Enrollments.Add(enrollment);
-        }
-
-        // GET: Enrollment/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
+            foreach (var learningPathTask in learningPath.Tasks)
             {
-                return NotFound();
-            }
-
-            var enrollment = await _context.Enrollments.FindAsync(id);
-            if (enrollment == null)
-            {
-                return NotFound();
-            }
-
-            ViewData["LearningPathId"] = new SelectList(_context.LearningPaths, "LearningPathId", "Title",
-                enrollment.LearningPathId);
-            ViewData["MentorId"] =
-                new SelectList(_context.ApplicationUsers.Where(user => user.UserRole.Equals(ApplicationRole.Mentor)),
-                    "Id", "UserName", enrollment.MentorId);
-            ViewData["NewComerId"] =
-                new SelectList(_context.ApplicationUsers.Where(user => user.UserRole.Equals(ApplicationRole.Newcomer)),
-                    "Id", "UserName", enrollment.NewComerId);
-            return View(enrollment);
-        }
-
-        // POST: Enrollment/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EnrollmentId,NewComerId,MentorId,LearningPathId")]
-            Enrollment enrollment)
-        {
-            if (id != enrollment.EnrollmentId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                var assignedTask = new AssignedTask()
                 {
-                    SetEnrollmentValues(enrollment);
-                    _context.Update(enrollment);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EnrollmentExists(enrollment.EnrollmentId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                    CatalogTaskId = learningPathTask.CatalogTaskId,
+                    AssignedLearningPathId = assignedLearningPath.AssignedLearningPathId,
+                    AssignedLearningPath = assignedLearningPath,
+                    Description = learningPathTask.Description,
+                    Title = learningPathTask.Title,
+                    Status = TaskStatus.ToDo,
+                    TaskType = learningPathTask.TaskType
+                };
 
-                return RedirectToAction(nameof(Index));
+                assignedTask.AssignedLearningPathId = assignedLearningPath.AssignedLearningPathId;
+                assignedLearningPath.Tasks.Add(assignedTask);
+                _context.AssignedTasks.Add(assignedTask);
             }
 
-            ViewData["LearningPathId"] = new SelectList(_context.LearningPaths, "LearningPathId", "Title",
-                enrollment.LearningPathId);
-            ViewData["MentorId"] =
-                new SelectList(_context.ApplicationUsers.Where(user => user.UserRole.Equals(ApplicationRole.Mentor)),
-                    "Id", "UserName", enrollment.MentorId);
-            ViewData["NewComerId"] =
-                new SelectList(_context.ApplicationUsers.Where(user => user.UserRole.Equals(ApplicationRole.Newcomer)),
-                    "Id", "UserName", enrollment.NewComerId);
-            return View(enrollment);
+            return assignedLearningPath;
         }
 
         // GET: Enrollment/Delete/5
@@ -203,14 +156,23 @@ namespace EmployeeTrainingTool.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var enrollment = await _context.Enrollments.FindAsync(id);
+            var assignedLearningPath = await _context.AssignedLearningPaths.FindAsync(enrollment.LearningPathId);
+            var assignedTasks = _context.AssignedTasks.Where(task =>
+                task.AssignedLearningPathId.Equals(assignedLearningPath.AssignedLearningPathId));
             _context.Enrollments.Remove(enrollment);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            _context.AssignedLearningPaths.Remove(assignedLearningPath);
+            foreach (var task in assignedTasks)
+            {
+                _context.AssignedTasks.Remove(task);
+            }
 
-        private bool EnrollmentExists(int id)
-        {
-            return _context.Enrollments.Any(e => e.EnrollmentId == id);
+            await _context.SaveChangesAsync();
+            if (User.IsInRole(ApplicationRole.Mentor))
+            {
+                return Redirect("/AssignedLearningPath/Index");
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

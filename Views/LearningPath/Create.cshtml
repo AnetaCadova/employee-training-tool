@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create New Learning path</h1>
+<h1>Create learning path</h1>
 
 <hr/>
 <div class="row">
@@ -22,14 +22,19 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
+
+            <h4>Task Catalog:</h4>
             <table class="table">
                 <thead>
                 <tr>
                     <th>
-                        @Html.Label("Tasks")
+                        @Html.Label("Title")
                     </th>
                     <th>
-                        @Html.Label("Add")
+                        @Html.Label("Type")
+                    </th>
+                    <th>
+                        @Html.Label("Description")
                     </th>
                     <th></th>
                 </tr>
@@ -40,6 +45,12 @@
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TaskType)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
                         </td>
                         <td>
                             <input name="tasksToAdd" type="checkbox" value="@item.CatalogTaskId" class=""/>

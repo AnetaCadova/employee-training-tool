@@ -6,17 +6,15 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>AssignedTask</h4>
+<h4>@Model.Title</h4>
 <hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="AssignedTaskId"/>
+            <input type="hidden" asp-for="AssignedLearningPathId"/>
             <input type="hidden" asp-for="CatalogTaskId"/>
-            <input type="hidden" asp-for="LearningPathId"/>
             <input type="hidden" asp-for="Description"/>
             <input type="hidden" asp-for="Title"/>
             <input type="hidden" asp-for="TaskType"/>

@@ -1,14 +1,12 @@
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using employee_training_tool.Data;
 using employee_training_tool.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TaskStatus = employee_training_tool.Models.TaskStatus;
 
-namespace EmployeeTrainingTool.Controllers
+namespace employee_training_tool.Controllers
 {
     public class LearningPathController : Controller
     {
@@ -38,12 +36,8 @@ namespace EmployeeTrainingTool.Controllers
 
             var learningPath = await _context.LearningPaths
                 .FirstOrDefaultAsync(m => m.LearningPathId == id);
-            learningPath.Tasks = _context.AssignedTasks
+            learningPath.Tasks = _context.LearningPathTasks
                 .Where(task => task.LearningPathId.Equals(learningPath.LearningPathId)).ToList();
-            if (learningPath == null)
-            {
-                return NotFound();
-            }
 
             return View(learningPath);
         }
@@ -65,18 +59,20 @@ namespace EmployeeTrainingTool.Controllers
         {
             if (ModelState.IsValid)
             {
-                learningPath.Tasks = new List<AssignedTask>();
+                learningPath.Tasks = new List<LearningPathTask>();
                 foreach (var taskId in tasksToAdd)
                 {
-                    var catalogTask = _context.CatalogTasks.Find(taskId);
-                    AssignedTask assignedTask = new AssignedTask()
+                    var catalogTask = await _context.CatalogTasks.FindAsync(taskId);
+                    var learningPathTask = new LearningPathTask()
                     {
-                        AssignedTaskId = 0, CatalogTaskId = taskId, Description = catalogTask.Description,
+                        CatalogTaskId = taskId,
+                        Description = catalogTask.Description,
+                        Title = catalogTask.Title,
                         LearningPathId = learningPath.LearningPathId,
-                        Status = TaskStatus.ToDo, TaskType = catalogTask.TaskType
+                        TaskType = catalogTask.TaskType
                     };
-                    learningPath.Tasks.Add(assignedTask);
-                    _context.AssignedTasks.Add(assignedTask);
+                    learningPath.Tasks.Add(learningPathTask);
+                    _context.LearningPathTasks.Add(learningPathTask);
                 }
 
                 _context.Add(learningPath);
@@ -101,6 +97,7 @@ namespace EmployeeTrainingTool.Controllers
                 return NotFound();
             }
 
+            ViewBag.ListOfTasks = ListOfTasks;
             return View(learningPath);
         }
 
@@ -110,7 +107,7 @@ namespace EmployeeTrainingTool.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("LearningPathId,Title,Description")]
-            LearningPath learningPath)
+            LearningPath learningPath, [Bind] List<int> tasksToAdd)
         {
             if (id != learningPath.LearningPathId)
             {
@@ -121,6 +118,39 @@ namespace EmployeeTrainingTool.Controllers
             {
                 try
                 {
+                    var currentTasks = _context.LearningPathTasks.Where(task =>
+                        task.LearningPathId.Equals(learningPath.LearningPathId)).ToList();
+                    List<int> currentCatalogTasks = currentTasks.Select(o => o.CatalogTaskId).ToList();
+                    learningPath.Tasks = new List<LearningPathTask>();
+                    foreach (var taskId in tasksToAdd)
+                    {
+                        var catalogTask = await _context.CatalogTasks.FindAsync(taskId);
+                        if (currentCatalogTasks.Contains(catalogTask.CatalogTaskId))
+                        {
+                            currentCatalogTasks.Remove(catalogTask.CatalogTaskId);
+                            continue;
+                        }
+
+                        var learningPathTask = new LearningPathTask()
+                        {
+                            CatalogTaskId = taskId,
+                            Description = catalogTask.Description,
+                            Title = catalogTask.Title,
+                            LearningPathId = learningPath.LearningPathId,
+                            TaskType = catalogTask.TaskType
+                        };
+                        learningPath.Tasks.Add(learningPathTask);
+                        _context.LearningPathTasks.Add(learningPathTask);
+                    }
+
+                    foreach (var task in currentTasks)
+                    {
+                        if (currentCatalogTasks.Contains(task.CatalogTaskId))
+                        {
+                            _context.LearningPathTasks.Remove(task);
+                        }
+                    }
+
                     _context.Update(learningPath);
                     await _context.SaveChangesAsync();
                 }
