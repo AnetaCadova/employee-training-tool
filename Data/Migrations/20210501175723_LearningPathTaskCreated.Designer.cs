@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using employee_training_tool.Data;
 
-namespace employee_training_tool.Data.Migrations
+namespace employee_training_tool.DataMigrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210501175723_LearningPathTaskCreated")]
+    partial class LearningPathTaskCreated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,9 +233,6 @@ namespace employee_training_tool.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("EnrollmentId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("MentorId")
                         .HasColumnType("INTEGER");
 
@@ -247,10 +246,6 @@ namespace employee_training_tool.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("AssignedLearningPathId");
-
-                    b.HasIndex("MentorId");
-
-                    b.HasIndex("NewComerId");
 
                     b.HasIndex("OriginalLearningPathId");
 
@@ -325,8 +320,7 @@ namespace employee_training_tool.Data.Migrations
 
                     b.HasKey("EnrollmentId");
 
-                    b.HasIndex("LearningPathId")
-                        .IsUnique();
+                    b.HasIndex("LearningPathId");
 
                     b.HasIndex("MentorId");
 
@@ -440,27 +434,11 @@ namespace employee_training_tool.Data.Migrations
 
             modelBuilder.Entity("employee_training_tool.Models.AssignedLearningPath", b =>
                 {
-                    b.HasOne("employee_training_tool.Models.ApplicationUser", "Mentor")
-                        .WithMany()
-                        .HasForeignKey("MentorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("employee_training_tool.Models.ApplicationUser", "NewComer")
-                        .WithMany()
-                        .HasForeignKey("NewComerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("employee_training_tool.Models.LearningPath", "OriginalLearningPath")
                         .WithMany()
                         .HasForeignKey("OriginalLearningPathId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Mentor");
-
-                    b.Navigation("NewComer");
 
                     b.Navigation("OriginalLearningPath");
                 });
@@ -479,8 +457,8 @@ namespace employee_training_tool.Data.Migrations
             modelBuilder.Entity("employee_training_tool.Models.Enrollment", b =>
                 {
                     b.HasOne("employee_training_tool.Models.AssignedLearningPath", "LearningPath")
-                        .WithOne("Enrollment")
-                        .HasForeignKey("employee_training_tool.Models.Enrollment", "LearningPathId")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("LearningPathId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -505,16 +483,18 @@ namespace employee_training_tool.Data.Migrations
 
             modelBuilder.Entity("employee_training_tool.Models.LearningPathTask", b =>
                 {
-                    b.HasOne("employee_training_tool.Models.LearningPath", null)
+                    b.HasOne("employee_training_tool.Models.LearningPath", "OriginalLearningPath")
                         .WithMany("Tasks")
                         .HasForeignKey("LearningPathId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("OriginalLearningPath");
                 });
 
             modelBuilder.Entity("employee_training_tool.Models.AssignedLearningPath", b =>
                 {
-                    b.Navigation("Enrollment");
+                    b.Navigation("Enrollments");
 
                     b.Navigation("Tasks");
                 });
