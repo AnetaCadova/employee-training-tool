@@ -92,7 +92,7 @@ namespace EmployeeTrainingTool.Controllers
                     }
                 }
 
-                return Redirect("/AssignedLearningPath/Details/" + id);
+                return Redirect("/AssignedLearningPath/Details/" + assignedTask.AssignedLearningPathId);
             }
 
             ViewData["AssignedLearningPathId"] = new SelectList(_context.AssignedLearningPaths,
