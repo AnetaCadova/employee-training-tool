@@ -6,26 +6,31 @@
 
 <h1>Enrollments</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (User.IsInRole(ApplicationRole.Admin))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NewComer.UserRole)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Mentor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LearningPath)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.NewComer.UserRole)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Mentor)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LearningPath)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.NewComer.UserName)
@@ -37,11 +42,12 @@
                 @Html.DisplayFor(modelItem => item.LearningPath.Title)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.EnrollmentId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EnrollmentId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.EnrollmentId">Delete</a>
+                @if (User.IsInRole(ApplicationRole.Admin))
+                {
+                    <a asp-action="Delete"asp-route-id="@item.EnrollmentId"> Delete </a>
+                }
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

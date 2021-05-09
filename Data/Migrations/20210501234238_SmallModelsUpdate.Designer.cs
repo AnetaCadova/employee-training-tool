@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using employee_training_tool.Data;
 
-namespace employee_training_tool.Data.Migrations
+namespace employee_training_tool.DataMigrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210501234238_SmallModelsUpdate")]
+    partial class SmallModelsUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -311,7 +313,6 @@ namespace employee_training_tool.Data.Migrations
             modelBuilder.Entity("employee_training_tool.Models.Enrollment", b =>
                 {
                     b.Property<int>("EnrollmentId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("LearningPathId")
@@ -324,9 +325,6 @@ namespace employee_training_tool.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("EnrollmentId");
-
-                    b.HasIndex("LearningPathId")
-                        .IsUnique();
 
                     b.HasIndex("MentorId");
 
@@ -480,7 +478,7 @@ namespace employee_training_tool.Data.Migrations
                 {
                     b.HasOne("employee_training_tool.Models.AssignedLearningPath", "LearningPath")
                         .WithOne("Enrollment")
-                        .HasForeignKey("employee_training_tool.Models.Enrollment", "LearningPathId")
+                        .HasForeignKey("employee_training_tool.Models.Enrollment", "EnrollmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

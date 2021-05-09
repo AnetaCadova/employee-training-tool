@@ -18,10 +18,16 @@ namespace employee_training_tool.Data
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<ApplicationRole> ApplicationRoles { get; set; }
         public DbSet<CatalogTask> CatalogTasks { get; set; }
+        public DbSet<LearningPathTask> LearningPathTasks { get; set; }
+
         public DbSet<AssignedTask> AssignedTasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AssignedLearningPath>()
+                .HasOne(path => path.Enrollment)
+                .WithOne(e => e.LearningPath)
+                .HasForeignKey<Enrollment>(e => e.LearningPathId);
             base.OnModelCreating(modelBuilder);
         }
     }

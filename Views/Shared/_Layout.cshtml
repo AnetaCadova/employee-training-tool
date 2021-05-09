@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -11,22 +15,37 @@
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Employee Training Tool</a>
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EmployeeTrainingTool</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="LearningPath" asp-action="Index">Learning Paths</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="CatalogTask" asp-action="Index">Task Catalog</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Enrollment" asp-action="Index">Enrollments</a>
-                    </li>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        @if (User.IsInRole(ApplicationRole.Newcomer) || User.IsInRole(ApplicationRole.Mentor))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AssignedLearningPath" asp-action="Index">Overview</a>
+                            </li>
+                        }
+                        @if (!User.IsInRole(ApplicationRole.Newcomer))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="LearningPath" asp-action="Index">LearningPaths</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="CatalogTask" asp-action="Index">Tasks</a>
+                            </li>
+                            @if (User.IsInRole(ApplicationRole.Admin) || User.IsInRole(ApplicationRole.Viewer))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Enrollment" asp-action="Index">Enrollments</a>
+                                </li>
+                            }
+                        }
+                    }
                 </ul>
                 <partial name="_LoginPartial"/>
             </div>
