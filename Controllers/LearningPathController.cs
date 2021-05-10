@@ -11,12 +11,14 @@ namespace employee_training_tool.Controllers
     public class LearningPathController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private List<CatalogTask> ListOfTasks;
+        private readonly List<CatalogTask> _listOfTasks;
+        private static int _order;
 
         public LearningPathController(ApplicationDbContext context)
         {
             _context = context;
-            ListOfTasks = _context.CatalogTasks.ToList();
+            _listOfTasks = _context.CatalogTasks.ToList();
+            _order = 1;
         }
 
         // GET: LearningPath
@@ -37,7 +39,7 @@ namespace employee_training_tool.Controllers
             var learningPath = await _context.LearningPaths
                 .FirstOrDefaultAsync(m => m.LearningPathId == id);
             learningPath.Tasks = _context.LearningPathTasks
-                .Where(task => task.LearningPathId.Equals(learningPath.LearningPathId)).ToList();
+                .Where(task => task.LearningPathId.Equals(learningPath.LearningPathId)).OrderBy(task => task.Order).ToList();
 
             return View(learningPath);
         }
@@ -45,7 +47,7 @@ namespace employee_training_tool.Controllers
         // GET: LearningPath/Create
         public IActionResult Create()
         {
-            ViewBag.ListOfTasks = ListOfTasks;
+            ViewBag.ListOfTasks = _listOfTasks;
             return View();
         }
 
@@ -65,6 +67,7 @@ namespace employee_training_tool.Controllers
                     var catalogTask = await _context.CatalogTasks.FindAsync(taskId);
                     var learningPathTask = new LearningPathTask()
                     {
+                        Order = _order,
                         CatalogTaskId = taskId,
                         Description = catalogTask.Description,
                         Title = catalogTask.Title,
@@ -73,7 +76,10 @@ namespace employee_training_tool.Controllers
                     };
                     learningPath.Tasks.Add(learningPathTask);
                     _context.LearningPathTasks.Add(learningPathTask);
+                    _order++;
                 }
+
+                _order = 0;
 
                 _context.Add(learningPath);
                 await _context.SaveChangesAsync();
@@ -97,7 +103,28 @@ namespace employee_training_tool.Controllers
                 return NotFound();
             }
 
-            ViewBag.ListOfTasks = ListOfTasks;
+            List<int> selectedTasksId =
+                _context.LearningPathTasks.Where(task => task.LearningPathId.Equals(id)).OrderBy(task => task.Order)
+                    .Select(task => task.CatalogTaskId).ToList();
+            
+            List<CatalogTask> catalogTasks = new List<CatalogTask>();
+            foreach (var catalogTaskId in selectedTasksId)
+            {
+                var catalogTask = _listOfTasks.Find(task => task.CatalogTaskId.Equals(catalogTaskId));
+                catalogTask.IsSelected = true;
+                catalogTasks.Add(catalogTask);
+            }
+
+            foreach (var task in _listOfTasks)
+            {
+                if (!catalogTasks.Contains(task))
+                {
+                    task.IsSelected = false;
+                    catalogTasks.Add(task);
+                }
+            }
+
+            ViewBag.ListOfTasks = catalogTasks;
             return View(learningPath);
         }
 
@@ -118,32 +145,45 @@ namespace employee_training_tool.Controllers
             {
                 try
                 {
-                    var currentTasks = _context.LearningPathTasks.Where(task =>
+                    var currentLearningPathTasks = _context.LearningPathTasks.Where(task =>
                         task.LearningPathId.Equals(learningPath.LearningPathId)).ToList();
-                    List<int> currentCatalogTasks = currentTasks.Select(o => o.CatalogTaskId).ToList();
+                    List<int> currentCatalogTasks = currentLearningPathTasks.Select(o => o.CatalogTaskId).ToList();
                     learningPath.Tasks = new List<LearningPathTask>();
-                    foreach (var taskId in tasksToAdd)
+                    for (int i = 0; i < tasksToAdd.Count; i++)
                     {
-                        var catalogTask = await _context.CatalogTasks.FindAsync(taskId);
-                        if (currentCatalogTasks.Contains(catalogTask.CatalogTaskId))
+                        var catalogTask = await _context.CatalogTasks.FindAsync(tasksToAdd[i]);
+                        var currentLearningPathTask =
+                            currentLearningPathTasks.Find(task => task.CatalogTaskId.Equals(catalogTask.CatalogTaskId));
+                        if (currentCatalogTasks.Contains(catalogTask.CatalogTaskId) &&
+                            currentLearningPathTask.Order.Equals(i + 1))
                         {
                             currentCatalogTasks.Remove(catalogTask.CatalogTaskId);
                             continue;
                         }
 
+                        if (currentCatalogTasks.Contains(catalogTask.CatalogTaskId) &&
+                            !currentLearningPathTask.Order.Equals(i + 1))
+                        {
+                            currentLearningPathTask.Order = i + 1;
+                            currentCatalogTasks.Remove(catalogTask.CatalogTaskId);
+                            _context.LearningPathTasks.Update(currentLearningPathTask);
+                            continue;
+                        }
+
                         var learningPathTask = new LearningPathTask()
                         {
-                            CatalogTaskId = taskId,
+                            CatalogTaskId = catalogTask.CatalogTaskId,
                             Description = catalogTask.Description,
                             Title = catalogTask.Title,
                             LearningPathId = learningPath.LearningPathId,
+                            Order = i+1,
                             TaskType = catalogTask.TaskType
                         };
                         learningPath.Tasks.Add(learningPathTask);
                         _context.LearningPathTasks.Add(learningPathTask);
                     }
 
-                    foreach (var task in currentTasks)
+                    foreach (var task in currentLearningPathTasks)
                     {
                         if (currentCatalogTasks.Contains(task.CatalogTaskId))
                         {

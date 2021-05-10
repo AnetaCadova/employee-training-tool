@@ -28,6 +28,7 @@ namespace employee_training_tool.Data
                 .HasOne(path => path.Enrollment)
                 .WithOne(e => e.LearningPath)
                 .HasForeignKey<Enrollment>(e => e.LearningPathId);
+            modelBuilder.Entity<CatalogTask>().Ignore(task => task.IsSelected);
             base.OnModelCreating(modelBuilder);
         }
     }

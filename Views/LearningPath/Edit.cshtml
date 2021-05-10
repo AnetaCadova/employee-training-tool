@@ -22,18 +22,17 @@
                 <input asp-for="Description" class="form-control"/>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary"/>
-            </div>
-
             <table class="table">
                 <thead>
                 <tr>
                     <th>
-                        @Html.Label("Tasks")
+                        @Html.Label("Title")
                     </th>
                     <th>
-                        @Html.Label("Add")
+                        @Html.Label("Type")
+                    </th>
+                    <th>
+                        @Html.Label("Description")
                     </th>
                     <th></th>
                 </tr>
@@ -46,13 +45,25 @@
                             @Html.DisplayFor(modelItem => item.Title)
                         </td>
                         <td>
-                            <input name="tasksToAdd" type="checkbox" value="@item.CatalogTaskId" class=""/>
+                            @Html.DisplayFor(modelItem => item.TaskType)
                         </td>
-
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            <input name="tasksToAdd" type="checkbox" value="@item.CatalogTaskId" checked="@item.IsSelected"/>
+                        </td>
+                        <td>
+                            <a href="#" class="up"> ▲ </a>
+                            <a href="#" class="down"> ▼ </a>
+                        </td>
                     </tr>
                 }
                 </tbody>
             </table>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary"/>
+            </div>
 
         </form>
     </div>
@@ -64,4 +75,17 @@
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+    <script type="text/javascript">
+           $(document).ready(function(){
+               $(".up,.down").click(function(){
+                   const row = $(this).parents("tr:first");
+                   if ($(this).is(".up")) {
+                       row.insertBefore(row.prev());
+                   } else {
+                       row.insertAfter(row.next());
+                   }
+               });
+           });
+        </script>
 }
