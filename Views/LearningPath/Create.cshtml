@@ -1,3 +1,5 @@
+@using Microsoft.AspNetCore.Razor.Language
+@using Microsoft.AspNetCore.Http.Features
 @model employee_training_tool.Models.LearningPath
 
 @{
@@ -53,7 +55,11 @@
                             @Html.DisplayFor(modelItem => item.Description)
                         </td>
                         <td>
-                            <input name="tasksToAdd" type="checkbox" value="@item.CatalogTaskId" class=""/>
+                            <input name="tasksToAdd" type="checkbox" value="@item.CatalogTaskId"/>
+                        </td>
+                        <td>
+                            <a href="#" class="up"> ▲ </a>
+                            <a href="#" class="down"> ▼ </a>
                         </td>
 
                     </tr>
@@ -74,4 +80,17 @@
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    
+    <script type="text/javascript">
+       $(document).ready(function(){
+           $(".up,.down").click(function(){
+               const row = $(this).parents("tr:first");
+               if ($(this).is(".up")) {
+                   row.insertBefore(row.prev());
+               } else {
+                   row.insertAfter(row.next());
+               }
+           });
+       });
+    </script>
 }
