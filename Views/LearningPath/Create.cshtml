@@ -1,5 +1,3 @@
-@using Microsoft.AspNetCore.Razor.Language
-@using Microsoft.AspNetCore.Http.Features
 @model employee_training_tool.Models.LearningPath
 
 @{
@@ -80,7 +78,7 @@
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-    
+
     <script type="text/javascript">
        $(document).ready(function(){
            $(".up,.down").click(function(){

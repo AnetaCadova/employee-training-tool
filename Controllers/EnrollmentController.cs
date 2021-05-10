@@ -115,6 +115,7 @@ namespace employee_training_tool.Controllers
                     CatalogTaskId = learningPathTask.CatalogTaskId,
                     AssignedLearningPathId = assignedLearningPath.AssignedLearningPathId,
                     AssignedLearningPath = assignedLearningPath,
+                    Order = learningPathTask.Order,
                     Description = learningPathTask.Description,
                     Title = learningPathTask.Title,
                     Status = TaskStatus.ToDo,
