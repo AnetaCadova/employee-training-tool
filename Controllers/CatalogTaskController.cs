@@ -1,11 +1,12 @@
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using employee_training_tool.Data;
 using employee_training_tool.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmployeeTrainingTool.Controllers
+namespace employee_training_tool.Controllers
 {
     public class CatalogTaskController : Controller
     {
@@ -56,6 +57,9 @@ namespace EmployeeTrainingTool.Controllers
         {
             if (ModelState.IsValid)
             {
+                catalogTask.Author = await _context.ApplicationUsers.FindAsync(
+                    int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+                catalogTask.AuthorId = catalogTask.Author.Id;
                 _context.Add(catalogTask);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -86,7 +90,7 @@ namespace EmployeeTrainingTool.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CatalogTaskId,Title,Description,TaskType")]
+        public async Task<IActionResult> Edit(int id, [Bind("CatalogTaskId,Title,Description,TaskType, AuthorId")]
             CatalogTask catalogTask)
         {
             if (id != catalogTask.CatalogTaskId)

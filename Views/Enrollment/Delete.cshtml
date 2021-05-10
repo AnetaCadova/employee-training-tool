@@ -34,6 +34,14 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="EnrollmentId"/>
         <input type="submit" value="Delete" class="btn btn-danger"/> |
-        <a asp-action="Index">Back to List</a>
+        @if (User.IsInRole(ApplicationRole.Admin) || User.IsInRole("Viewer"))
+        {
+            <a asp-action="Index">Back to List</a>
+        }
+        else
+        {
+            @Html.ActionLink("Back to Overview", "Index", "AssignedLearningPath", "", null)
+        }
+
     </form>
 </div>

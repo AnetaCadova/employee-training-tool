@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmployeeTrainingTool.Controllers
+namespace employee_training_tool.Controllers
 {
     public class AssignedTaskController : Controller
     {

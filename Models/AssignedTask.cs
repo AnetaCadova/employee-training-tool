@@ -5,6 +5,7 @@ namespace employee_training_tool.Models
         public int AssignedTaskId { get; set; }
         public int AssignedLearningPathId { get; set; }
         public int CatalogTaskId { get; set; }
+        public int Order { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public TaskStatus Status { get; set; }

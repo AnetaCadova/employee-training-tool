@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using employee_training_tool.Data;
 using employee_training_tool.Models;
@@ -39,7 +40,8 @@ namespace employee_training_tool.Controllers
             var learningPath = await _context.LearningPaths
                 .FirstOrDefaultAsync(m => m.LearningPathId == id);
             learningPath.Tasks = _context.LearningPathTasks
-                .Where(task => task.LearningPathId.Equals(learningPath.LearningPathId)).OrderBy(task => task.Order).ToList();
+                .Where(task => task.LearningPathId.Equals(learningPath.LearningPathId)).OrderBy(task => task.Order)
+                .ToList();
 
             return View(learningPath);
         }
@@ -61,6 +63,9 @@ namespace employee_training_tool.Controllers
         {
             if (ModelState.IsValid)
             {
+                learningPath.Author = await _context.ApplicationUsers.FindAsync(
+                    int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+                learningPath.AuthorId = learningPath.Author.Id;
                 learningPath.Tasks = new List<LearningPathTask>();
                 foreach (var taskId in tasksToAdd)
                 {
@@ -80,7 +85,6 @@ namespace employee_training_tool.Controllers
                 }
 
                 _order = 0;
-
                 _context.Add(learningPath);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -106,7 +110,7 @@ namespace employee_training_tool.Controllers
             List<int> selectedTasksId =
                 _context.LearningPathTasks.Where(task => task.LearningPathId.Equals(id)).OrderBy(task => task.Order)
                     .Select(task => task.CatalogTaskId).ToList();
-            
+
             List<CatalogTask> catalogTasks = new List<CatalogTask>();
             foreach (var catalogTaskId in selectedTasksId)
             {
@@ -133,7 +137,7 @@ namespace employee_training_tool.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("LearningPathId,Title,Description")]
+        public async Task<IActionResult> Edit(int id, [Bind("LearningPathId,Title,Description, AuthorId")]
             LearningPath learningPath, [Bind] List<int> tasksToAdd)
         {
             if (id != learningPath.LearningPathId)
@@ -176,7 +180,7 @@ namespace employee_training_tool.Controllers
                             Description = catalogTask.Description,
                             Title = catalogTask.Title,
                             LearningPathId = learningPath.LearningPathId,
-                            Order = i+1,
+                            Order = i + 1,
                             TaskType = catalogTask.TaskType
                         };
                         learningPath.Tasks.Add(learningPathTask);
