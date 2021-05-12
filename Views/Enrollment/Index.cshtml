@@ -17,13 +17,13 @@
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.NewComer.UserRole)
+            @Html.DisplayNameFor(model => model.LearningPath)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Mentor)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.LearningPath)
+            @Html.DisplayNameFor(model => model.NewComer)
         </th>
         <th></th>
     </tr>
@@ -33,13 +33,14 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.NewComer.UserName)
+                @Html.DisplayFor(modelItem => item.LearningPath.Title)
             </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.Mentor.UserName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LearningPath.Title)
+                @Html.DisplayFor(modelItem => item.NewComer.UserName)
             </td>
             <td>
                 @if (User.IsInRole(ApplicationRole.Admin))
