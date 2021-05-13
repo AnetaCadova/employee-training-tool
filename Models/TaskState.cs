@@ -1,6 +1,6 @@
 namespace employee_training_tool.Models
 {
-    public enum TaskStatus
+    public enum TaskState
     {
         ToDo,
         InProgress,

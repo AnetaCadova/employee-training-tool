@@ -8,7 +8,7 @@ namespace employee_training_tool.Models
         public int Order { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public TaskStatus Status { get; set; }
+        public TaskState State { get; set; }
         public TaskTypes TaskType { get; set; }
         public AssignedLearningPath AssignedLearningPath { get; set; }
     }

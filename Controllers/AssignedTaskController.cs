@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using employee_training_tool.Data;
@@ -35,7 +36,7 @@ namespace employee_training_tool.Controllers
 
             return View(assignedTask);
         }
-        
+
 
         // GET: AssignedTask/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -65,7 +66,7 @@ namespace employee_training_tool.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("AssignedTaskId,AssignedLearningPathId,CatalogTaskId,Title,Description,Status,TaskType")]
+            [Bind("AssignedTaskId,AssignedLearningPathId,CatalogTaskId,Title,Description,State,TaskType,Order")]
             AssignedTask assignedTask)
         {
             if (id != assignedTask.AssignedTaskId)
@@ -78,6 +79,23 @@ namespace employee_training_tool.Controllers
                 try
                 {
                     _context.Update(assignedTask);
+                    await _context.SaveChangesAsync();
+
+                    var assignedLearningPath = await
+                        _context.AssignedLearningPaths.FindAsync(assignedTask.AssignedLearningPathId);
+                    var tasks = _context.AssignedTasks.Where(task =>
+                        task.AssignedLearningPathId.Equals(assignedLearningPath.AssignedLearningPathId)).ToList();
+                    var done = 0;
+                    foreach (var task in tasks)
+                    {
+                        if (task.State.Equals(TaskState.Done))
+                        {
+                            done++;
+                        }
+                    }
+
+                    assignedLearningPath.Progress = (double) (Decimal.Divide(done, tasks.Count) * 100);
+                    _context.AssignedLearningPaths.Update(assignedLearningPath);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

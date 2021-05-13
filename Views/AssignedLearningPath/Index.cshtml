@@ -22,13 +22,21 @@
         <th>
             @Html.DisplayNameFor(model => model.Description)
         </th>
+        @if (User.IsInRole(ApplicationRole.Newcomer))
+        {
+            <th>
+                @Html.DisplayNameFor(model => model.Mentor)
+            </th>
+        }
+        else
+        {
+            <th>
+                @Html.DisplayNameFor(model => model.NewComer)
+            </th>
+        }
         <th>
-            @Html.DisplayNameFor(model => model.Mentor)
+            @Html.Label("Progress")
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.NewComer)
-        </th>
-
         <th></th>
     </tr>
     </thead>
@@ -37,19 +45,29 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @Html.ActionLink(item.Title, "Details", "AssignedLearningPath", new {id = item.AssignedLearningPathId}, null)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
+            @if (User.IsInRole(ApplicationRole.Newcomer))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mentor.UserName)
+                </td>
+            }
+            else
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.NewComer.UserName)
+                </td>
+            }
             <td>
-                @Html.DisplayFor(modelItem => item.Mentor.UserName)
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: @item.Progress%" aria-valuenow="@item.Progress" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NewComer.UserName)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.AssignedLearningPathId">Details</a> |
                 @if (User.IsInRole(ApplicationRole.Mentor))
                 {
                     @Html.ActionLink("Delete", "Delete", "Enrollment", new {id = item.EnrollmentId}, null)

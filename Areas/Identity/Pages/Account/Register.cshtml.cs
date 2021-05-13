@@ -28,7 +28,7 @@ namespace employee_training_tool.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole<int>> _roleManager;
 
-        public IEnumerable<SelectListItem> Roles = ApplicationRole.getRoles()
+        public IEnumerable<SelectListItem> Roles = new List<String> {"Mentor", "Newcomer"}
             .Select(role =>
                 new SelectListItem
                 {
@@ -70,10 +70,6 @@ namespace employee_training_tool.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
-
-            // [Required]
-            // [Display(Name = "Username")]
-            // public string Username { get; set; }
 
             [Required]
             [EmailAddress]
