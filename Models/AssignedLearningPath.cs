@@ -9,6 +9,8 @@ namespace employee_training_tool.Models
         public int MentorId { get; set; }
         public int NewComerId { get; set; }
         public int EnrollmentId { get; set; }
+
+        public double Progress { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public ApplicationUser Mentor { get; set; }

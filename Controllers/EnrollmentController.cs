@@ -7,7 +7,6 @@ using employee_training_tool.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using TaskStatus = employee_training_tool.Models.TaskStatus;
 
 namespace employee_training_tool.Controllers
 {
@@ -107,6 +106,7 @@ namespace employee_training_tool.Controllers
                 NewComerId = enrollment.NewComerId,
                 NewComer = enrollment.NewComer,
                 Tasks = new List<AssignedTask>(),
+                Progress = 0
             };
             foreach (var learningPathTask in learningPath.Tasks)
             {
@@ -118,7 +118,7 @@ namespace employee_training_tool.Controllers
                     Order = learningPathTask.Order,
                     Description = learningPathTask.Description,
                     Title = learningPathTask.Title,
-                    Status = TaskStatus.ToDo,
+                    State = TaskState.ToDo,
                     TaskType = learningPathTask.TaskType
                 };
 

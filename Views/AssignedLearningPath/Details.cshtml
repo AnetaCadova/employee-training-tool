@@ -4,9 +4,9 @@
     ViewData["Title"] = "Details";
 }
 
+<h1>@Model.Title</h1>
 
 <div>
-    <h4>@Model.Title</h4>
     <hr/>
     <dl class="row">
         <dt class="col-sm-2">
@@ -67,7 +67,7 @@
                         @Html.DisplayFor(model => item.TaskType)
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.Status)
+                        @Html.DisplayFor(model => item.State)
                     </td>
                     <td>
                         @Html.ActionLink("Open", "Edit", "AssignedTask", new {id = item.AssignedTaskId}, null)

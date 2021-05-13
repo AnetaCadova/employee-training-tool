@@ -31,10 +31,10 @@
                         @Html.Label("Title")
                     </th>
                     <th>
-                        @Html.Label("Type")
+                        @Html.Label("Description")
                     </th>
                     <th>
-                        @Html.Label("Description")
+                        @Html.Label("TaskType")
                     </th>
                     <th></th>
                 </tr>
@@ -47,10 +47,10 @@
                             @Html.DisplayFor(modelItem => item.Title)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.TaskType)
+                            @Html.DisplayFor(modelItem => item.Description)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Description)
+                            @Html.DisplayFor(modelItem => item.TaskType)
                         </td>
                         <td>
                             <input name="tasksToAdd" type="checkbox" value="@item.CatalogTaskId"/>
