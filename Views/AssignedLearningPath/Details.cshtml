@@ -69,9 +69,18 @@
                     <td>
                         @Html.DisplayFor(model => item.State)
                     </td>
-                    <td>
-                        @Html.ActionLink("Open", "Edit", "AssignedTask", new {id = item.AssignedTaskId}, null)
-                    </td>
+                    @if (User.IsInRole(ApplicationRole.Viewer))
+                    {
+                        <td>
+                            @Html.ActionLink("Details", "Details", "AssignedTask", new {id = item.AssignedTaskId}, null)
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.ActionLink("Open", "Edit", "AssignedTask", new {id = item.AssignedTaskId}, null)
+                        </td>
+                    }
                 </tr>
             }
             </tbody>

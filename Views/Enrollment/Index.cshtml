@@ -33,7 +33,7 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.LearningPath.Title)
+                @Html.ActionLink(item.LearningPath.Title, "Details", "AssignedLearningPath", new {id = item.LearningPath.AssignedLearningPathId}, null)
             </td>
 
             <td>
