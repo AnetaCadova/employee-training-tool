@@ -27,7 +27,6 @@ namespace employee_training_tool.Data
             {
                 AddCatalogTask(context, "Create gmail labels", "Please create gmail labels.", TaskTypes.Exercise, 1);
                 AddCatalogTask(context, "Generate tokens", "Please generate your tokens.", TaskTypes.Exercise, 1);
-                AddCatalogTask(context, "Generate tokens", "Please generate your tokens.", TaskTypes.Exercise, 1);
                 AddCatalogTask(context, "Explore your timesheet",
                     "Check your timesheet and try to log time spent at work today.", TaskTypes.Exercise, 1);
                 AddCatalogTask(context, "Company strategy",
