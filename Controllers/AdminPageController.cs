@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using employee_training_tool.Data;
 using employee_training_tool.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -95,8 +96,27 @@ namespace employee_training_tool.Controllers
             {
                 try
                 {
+                    var desiredRole = _context.Roles.Where(role => role.Name.Equals(applicationUser.UserRole)).ToList()
+                        .First();
+                    var currentUserRoles = _context.UserRoles.Where(user => user.UserId.Equals(applicationUser.Id));
+                    var currentUserRole = currentUserRoles.First();
+                    if (!desiredRole.Id.Equals(currentUserRole.RoleId))
+                    {
+                        IdentityUserRole<int> identityUserRole = new IdentityUserRole<int>()
+                        {
+                            UserId = currentUserRole.UserId,
+                            RoleId = desiredRole.Id
+                        };
+                        _context.UserRoles.Remove(currentUserRole);
+                        await _context.SaveChangesAsync();
+                        _context.UserRoles.Add(identityUserRole);
+                    }
+
                     applicationUser.NormalizedEmail = applicationUser.Email.ToUpper();
-                    _context.Update(applicationUser);
+                    applicationUser.UserName = applicationUser.Email;
+                    applicationUser.NormalizedUserName = applicationUser.Email.ToUpper();
+                    _context.Users.Update(applicationUser);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
