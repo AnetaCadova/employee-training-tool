@@ -41,6 +41,8 @@ namespace employee_training_tool.Controllers
         // GET: AssignedTask/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (User.IsInRole(ApplicationRole.Viewer))
+                return BadRequest("Sorry, you are not allowed to access this page.");
             if (id == null)
             {
                 return NotFound();
