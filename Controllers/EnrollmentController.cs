@@ -22,6 +22,9 @@ namespace employee_training_tool.Controllers
         // GET: Enrollment
         public async Task<IActionResult> Index()
         {
+            if (User.IsInRole(ApplicationRole.Newcomer) || User.IsInRole(ApplicationRole.Mentor))
+                return BadRequest("Sorry, you are not allowed to access this page.");
+
             var applicationDbContext = _context.Enrollments.Include(e => e.LearningPath).Include(e => e.Mentor)
                 .Include(e => e.NewComer);
             return View(await applicationDbContext.ToListAsync());
@@ -31,6 +34,9 @@ namespace employee_training_tool.Controllers
         // GET: Enrollment/Create
         public IActionResult Create()
         {
+            if (User.IsInRole(ApplicationRole.Newcomer) || User.IsInRole(ApplicationRole.Viewer))
+                return BadRequest("Sorry, you are not allowed to access this page.");
+
             ViewData["LearningPathId"] = new SelectList(_context.LearningPaths, "LearningPathId", "Title");
             ViewData["MentorId"] =
                 new SelectList(_context.ApplicationUsers.Where(user => user.UserRole.Equals(ApplicationRole.Mentor)),
@@ -133,6 +139,9 @@ namespace employee_training_tool.Controllers
         // GET: Enrollment/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (User.IsInRole(ApplicationRole.Newcomer) || User.IsInRole(ApplicationRole.Viewer))
+                return BadRequest("Sorry, you are not allowed to access this page.");
+            
             if (id == null)
             {
                 return NotFound();
