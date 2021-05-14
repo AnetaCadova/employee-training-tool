@@ -20,12 +20,18 @@ namespace employee_training_tool.Controllers
         // GET: CatalogTask
         public async Task<IActionResult> Index()
         {
+            if (User.IsInRole(ApplicationRole.Newcomer))
+                return BadRequest("Sorry, you are not allowed to access this page.");
+
             return View(await _context.CatalogTasks.ToListAsync());
         }
 
         // GET: CatalogTask/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (User.IsInRole(ApplicationRole.Newcomer))
+                return BadRequest("Sorry, you are not allowed to access this page.");
+
             if (id == null)
             {
                 return NotFound();
@@ -44,6 +50,9 @@ namespace employee_training_tool.Controllers
         // GET: CatalogTask/Create
         public IActionResult Create()
         {
+            if (User.IsInRole(ApplicationRole.Newcomer))
+                return BadRequest("Sorry, you are not allowed to access this page.");
+
             return View();
         }
 
@@ -71,6 +80,9 @@ namespace employee_training_tool.Controllers
         // GET: CatalogTask/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (User.IsInRole(ApplicationRole.Newcomer))
+                return BadRequest("Sorry, you are not allowed to access this page.");
+
             if (id == null)
             {
                 return NotFound();
@@ -126,6 +138,9 @@ namespace employee_training_tool.Controllers
         // GET: CatalogTask/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (User.IsInRole(ApplicationRole.Newcomer))
+                return BadRequest("Sorry, you are not allowed to access this page.");
+            
             if (id == null)
             {
                 return NotFound();

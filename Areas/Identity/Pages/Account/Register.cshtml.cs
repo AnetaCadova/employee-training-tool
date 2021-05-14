@@ -109,14 +109,6 @@ namespace employee_training_tool.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    if (!await _roleManager.RoleExistsAsync(Input.Role))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole<int>(ApplicationRole.Admin));
-                        await _roleManager.CreateAsync(new IdentityRole<int>(ApplicationRole.Mentor));
-                        await _roleManager.CreateAsync(new IdentityRole<int>(ApplicationRole.Newcomer));
-                        await _roleManager.CreateAsync(new IdentityRole<int>(ApplicationRole.Viewer));
-                    }
-
                     await _userManager.AddToRoleAsync(user, Input.Role);
 
                     await _userManager.AddToRolesAsync(user, ApplicationRole.getRoles());
