@@ -119,6 +119,7 @@ namespace employee_training_tool.Controllers
                 var assignedTask = new AssignedTask()
                 {
                     CatalogTaskId = learningPathTask.CatalogTaskId,
+                    CatalogTask = _context.CatalogTasks.Find(learningPathTask.CatalogTaskId),
                     AssignedLearningPathId = assignedLearningPath.AssignedLearningPathId,
                     AssignedLearningPath = assignedLearningPath,
                     Order = learningPathTask.Order,

@@ -83,6 +83,7 @@ namespace employee_training_tool.Controllers
                     {
                         Order = _order,
                         CatalogTaskId = taskId,
+                        CatalogTask = catalogTask,
                         Description = catalogTask.Description,
                         Title = catalogTask.Title,
                         LearningPathId = learningPath.LearningPathId,
@@ -189,6 +190,7 @@ namespace employee_training_tool.Controllers
                         var learningPathTask = new LearningPathTask()
                         {
                             CatalogTaskId = catalogTask.CatalogTaskId,
+                            CatalogTask = catalogTask,
                             Description = catalogTask.Description,
                             Title = catalogTask.Title,
                             LearningPathId = learningPath.LearningPathId,
